@@ -47,7 +47,7 @@ pub fn get() -> Bitness {
 
     println!("os: {}", os);
     if os == "netbsd" {
-        match &Command::new("sysctl").arg("-e hw.machine_arch").output() {
+        match &Command::new("sysctl").arg("-n hw.machine_arch").output() {
             Ok(Output {stdout, ..}) if stdout == b"x86_64\n" => Bitness::X64,
             Ok(Output {stdout, ..}) if stdout == b"i386\n" => Bitness::X32,
             _ => Bitness::Unknown,
