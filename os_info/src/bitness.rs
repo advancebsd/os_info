@@ -44,6 +44,8 @@ pub fn get() -> Bitness {
     let os = String::new();
     #[cfg(target_os = "netbsd")]
     let os = "netbsd";
+
+    println!("os: {}", os);
     if os == "netbsd" {
         match &Command::new("sysctl").arg("-e hw.machine_arch").output() {
             Ok(Output {stdout, ..}) if stdout == b"x86_64\n" => Bitness::X64,
