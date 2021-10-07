@@ -8,6 +8,7 @@ use std::fmt::{self, Display, Formatter};
     target_os = "macos",
     target_os = "netbsd"
 ))]
+//use std::process::{Command, Output};
 use std::process::{Command, Output};
 use std::str;
 
@@ -48,11 +49,14 @@ pub fn get() -> Bitness {
 
     println!("os: {}", os);
     if os == "netbsd" {
-        match &Command::new("sysctl").arg("-nx hw.machine_arch").output() {
-            Ok(Output {stdout, ..}) if stdout == b"7838365f363400\n" => Bitness::X64,
-            //Ok(Output {stdout, ..}) if stdout == "i386\n" => Bitness::X32,
-            _ => Bitness::Unknown,
-        }
+        // match &Command::new("sysctl").arg("-nx hw.machine_arch").output() {
+        //     Ok(Stdio {stdout, ..}) if stdout == b"7838365f363400\n" => Bitness::X64,
+        //     //Ok(Output {stdout, ..}) if stdout == "i386\n" => Bitness::X32,
+        //     _ => Bitness::Unknown,
+        // }
+        let output = Command::new("sysctl").arg("-n hw.machine_arch").output().expect("Did not work");
+        println!("{}", output.status);
+        return Bitness::X64
     } else {
         match &Command::new("getconf").arg("LONG_BIT").output() {
             Ok(Output { stdout, .. }) if stdout == b"32\n" => Bitness::X32,
