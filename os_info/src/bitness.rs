@@ -9,6 +9,7 @@ use std::fmt::{self, Display, Formatter};
     target_os = "netbsd"
 ))]
 use std::process::{Command, Output};
+use std::str;
 
 /// Operating system architecture in terms of how many bits compose the basic values it can deal with.
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -47,9 +48,9 @@ pub fn get() -> Bitness {
 
     println!("os: {}", os);
     if os == "netbsd" {
-        match &Command::new("sysctl").arg("-n hw.machine_arch").output() {
-            Ok(Output {stdout, ..}) if stdout == b"x86_64\n" => Bitness::X64,
-            Ok(Output {stdout, ..}) if stdout == b"i386\n" => Bitness::X32,
+        match &Command::new("sysctl").arg("-nx hw.machine_arch").output() {
+            Ok(Output {stdout, ..}) if stdout == b"7838365f363400\n" => Bitness::X64,
+            //Ok(Output {stdout, ..}) if stdout == "i386\n" => Bitness::X32,
             _ => Bitness::Unknown,
         }
     } else {
