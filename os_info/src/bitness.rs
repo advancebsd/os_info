@@ -54,8 +54,7 @@ pub fn get() -> Bitness {
         //     //Ok(Output {stdout, ..}) if stdout == "i386\n" => Bitness::X32,
         //     _ => Bitness::Unknown,
         // }
-        let output = Command::new("sysctl")
-            .arg("-n hw.machine_arch")
+        let output = Command::new("sysctl -n hw.machine_arch")
             .stdout(Stdio::piped())
             .output()
             .expect("Did not work");
