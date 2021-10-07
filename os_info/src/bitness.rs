@@ -47,14 +47,15 @@ pub fn get() -> Bitness {
     if os == "netbsd" {
         match &Command::new("sysctl").arg("hw.machine_arch").output() {
             Ok(Output {stdout, ..}) if stdout == b"x86_64\n" => Bitness::X64,
-            _ => Bitness::Unknown
+            Ok(Output {stdout, ..}) if stdout == b"i386\n" => Bitness::X32,
+            _ => Bitness::Unknown,
         }
     } else {
-    match &Command::new("getconf").arg("LONG_BIT").output() {
-        Ok(Output { stdout, .. }) if stdout == b"32\n" => Bitness::X32,
-        Ok(Output { stdout, .. }) if stdout == b"64\n" => Bitness::X64,
-        _ => Bitness::Unknown,
-    }
+        match &Command::new("getconf").arg("LONG_BIT").output() {
+            Ok(Output { stdout, .. }) if stdout == b"32\n" => Bitness::X32,
+            Ok(Output { stdout, .. }) if stdout == b"64\n" => Bitness::X64,
+            _ => Bitness::Unknown,
+        }
     }
 }
 
