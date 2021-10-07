@@ -57,7 +57,7 @@ pub fn get() -> Bitness {
         let output = Command::new("sysctl -n hw.machine_arch")
             .stdout(Stdio::piped())
             .output()
-            .expect("Did not work");
+            .unwrap();
         let stdout = String::from_utf8(output.stdout).unwrap();
         println!("output: {}", stdout);
         return Bitness::X64
