@@ -9,7 +9,7 @@ use std::fmt::{self, Display, Formatter};
     target_os = "netbsd"
 ))]
 //use std::process::{Command, Output};
-use std::process::{Command, Output};
+use std::process::{Command, Output, Stdio};
 use std::str;
 
 /// Operating system architecture in terms of how many bits compose the basic values it can deal with.
@@ -54,8 +54,13 @@ pub fn get() -> Bitness {
         //     //Ok(Output {stdout, ..}) if stdout == "i386\n" => Bitness::X32,
         //     _ => Bitness::Unknown,
         // }
-        let output = Command::new("sysctl").arg("-n hw.machine_arch").output().expect("Did not work");
-        println!("{}", output.status);
+        let output = Command::new("sysctl")
+            .arg("-n hw.machine_arch")
+            .stdout(Stdio::piped())
+            .output()
+            .expect("Did not work");
+        let stdout = String::from_utf8(output.stdout).unwrap();
+        println!("output: {}", stdout);
         return Bitness::X64
     } else {
         match &Command::new("getconf").arg("LONG_BIT").output() {
