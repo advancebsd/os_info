@@ -35,6 +35,7 @@ fn get_os(ver: String) -> Type {
                 .arg("-a hardening")
                 .output()
                 .expect("Failed to check if is hardened");
+            println!("{:?}", checkHardening);
             let isHardened = Command::new("echo")
                 .arg("$?")
                 .output()
