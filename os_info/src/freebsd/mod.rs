@@ -39,6 +39,7 @@ fn get_os(ver: String) -> Type {
                 .arg("$?")
                 .output()
                 .expect("Could not get a return value");
+            println!("{}", isHardened);
             match str::from_utf8(&isHardened.stdout).unwrap() {
                 "0\n" => return Type::HardenedBSD,
                 _ => return Type::FreeBSD,
