@@ -13,7 +13,7 @@ pub fn current_platform() -> Info {
         .unwrap_or_else(|| Version::Unknown);
 
     let info = Info {
-        os_type: get_os(version.to_string()),
+        os_type: get_os(),
         version,
         bitness: bitness::get(),
         ..Default::default()
