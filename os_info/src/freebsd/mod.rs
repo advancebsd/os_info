@@ -31,18 +31,13 @@ fn get_os(ver: String) -> Type {
 
     match str::from_utf8(&os.stdout).unwrap() {
         "FreeBSD\n" => {
-            let checkHardening = Command::new("sysctl")
+            let check_hardening = Command::new("sysctl")
                 .arg("hardening.version")
                 .output()
                 .expect("Failed to check if is hardened");
-            println!("{:?}", checkHardening);
-            let isHardened = Command::new("echo")
-                .arg("$status")
-                .output()
-                .expect("Could not get a return value");
-            println!("{:?}", isHardened);
-            match str::from_utf8(&isHardened.stdout).unwrap() {
-                "0\n" => return Type::HardenedBSD,
+            println!("{:?}", check_hardening);
+            match str::from_utf8(&check_hardening.stderr).unwrap() {
+                "" => return Type::HardenedBSD,
                 _ => return Type::FreeBSD,
             }
         },
