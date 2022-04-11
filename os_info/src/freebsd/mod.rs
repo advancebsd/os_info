@@ -29,8 +29,8 @@ fn get_os(ver: String) -> Type {
         .output()
         .expect("Failed to get OS");
 
-    match str::from_utf8(&os.stdout).unwrap() {
-        "FreeBSD\n" => {
+    match str::from_utf8(&os.stdout).trim() {
+        Ok("FreeBSD") => {
             let checkHardening = Command::new("sysctl")
                 .arg("-a hardening")
                 .output()
@@ -39,13 +39,13 @@ fn get_os(ver: String) -> Type {
                 .arg("$?")
                 .output()
                 .expect("Could not get a return value");
-            match str::from_utf8(&isHardened.stdout).unwrap() {
-                "0\n" => return Type::HardenedBSD,
-                _ => return Type::FreeBSD,
+            match str::from_utf8(&isHardened.stdout).trim() {
+                Ok("0") => return Type::HardenedBSD,
+                Err(_) => return Type::FreeBSD,
             }
         },
-        "MidnightBSD\n" => Type::MidnightBSD,
-        _ => Type::Unknown,
+        Ok("MidnightBSD") => Type::MidnightBSD,
+        Err(_) => Type::Unknown,
     }
 }
 
